@@ -1,0 +1,40 @@
+package br.com.ucsal.apigateway.clients;
+
+import br.com.ucsal.apigateway.dtos.ApiResponse;
+import br.com.ucsal.apigateway.dtos.LoginDTO;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+@Service
+public class AuthServiceClient {
+
+    private final WebClient webClient;
+    private final String authServiceUrl;
+    private final String authServicePath;
+
+    public AuthServiceClient(WebClient webClient,
+                             @Value("${auth-service.url}") String authServiceUrl,
+                             @Value("${auth-service.path}") String authServicePath) {
+        this.webClient = webClient;
+        this.authServiceUrl = authServiceUrl;
+        this.authServicePath = authServicePath;
+    }
+
+    public Mono<ApiResponse> login(LoginDTO dto) {
+        return webClient.post()
+                .uri(authServiceUrl + authServicePath + "/login")
+                .bodyValue(dto)
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.UNAUTHORIZED)) {
+                        return response.bodyToMono(ApiResponse.class);
+                    }
+                    return response.bodyToMono(ApiResponse.class);
+                })
+                .onErrorResume(e -> Mono.just(
+                        new ApiResponse<>(500, "Erro ao comunicar com o serviço de autenticação", null)
+                ));
+    }
+}
