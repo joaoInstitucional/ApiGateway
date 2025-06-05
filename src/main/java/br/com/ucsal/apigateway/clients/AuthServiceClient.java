@@ -12,10 +12,12 @@ import reactor.core.publisher.Mono;
 @Service
 public class AuthServiceClient {
 
+    // Ferramenta para requisições HTTP que o spring oferece, não-bloqueante
     private final WebClient webClient;
     private final String authServiceUrl;
     private final String authServicePath;
 
+    //Construtor da classe instanciando o webclient, a url e o caminho do serviço recuprando do application.properties
     public AuthServiceClient(WebClient webClient,
                              @Value("${auth-service.url}") String authServiceUrl,
                              @Value("${auth-service.path}") String authServicePath) {
@@ -24,6 +26,8 @@ public class AuthServiceClient {
         this.authServicePath = authServicePath;
     }
 
+    //Mono é um tipo de objeto da Programação Reativa, fornecido pela biblioteca Project Reactor (usada no Spring WebFlux).
+    //Estou usando ele por ser não-bloqueante e comporta-se semelhante a uma promise do javascript
     public Mono<ApiResponse> login(LoginDTO dto) {
         return webClient.post()
                 .uri(authServiceUrl + authServicePath + "/login")
