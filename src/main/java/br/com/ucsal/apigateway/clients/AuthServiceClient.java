@@ -1,7 +1,6 @@
 package br.com.ucsal.apigateway.clients;
 
 import br.com.ucsal.apigateway.dtos.ApiResponse;
-import br.com.ucsal.apigateway.dtos.CredentialDTO;
 import br.com.ucsal.apigateway.dtos.LoginDTO;
 import br.com.ucsal.apigateway.dtos.RegisterDTO;
 import org.springframework.beans.factory.annotation.Value;
