@@ -1,7 +1,9 @@
 package br.com.ucsal.apigateway.clients;
 
 import br.com.ucsal.apigateway.dtos.ApiResponse;
+import br.com.ucsal.apigateway.dtos.CredentialDTO;
 import br.com.ucsal.apigateway.dtos.LoginDTO;
+import br.com.ucsal.apigateway.dtos.RegisterDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,17 @@ public class AuthServiceClient {
                 })
                 .onErrorResume(e -> Mono.just(
                         new ApiResponse<>(500, "Erro ao comunicar com o serviço de autenticação", null)
+                ));
+    }
+
+    public Mono<ApiResponse> criarCredential(RegisterDTO registerDTO) {
+        return webClient.post()
+                .uri(authServiceUrl + authServicePath + "/register")
+                .bodyValue(registerDTO)
+                .retrieve()
+                .bodyToMono(ApiResponse.class)
+                .onErrorResume(e -> Mono.just(
+                        new ApiResponse<>(500, "Erro ao criar credencial", null)
                 ));
     }
 }
